@@ -67,7 +67,7 @@ export const login = {
         <form @submit.prevent="login">
           <div class="row">
             <label>Email</label>
-            <input type="email" v-model="parent.formData.email" required />
+            <input type="email" required />
           </div>
 
           <div class="row">
@@ -88,3 +88,4 @@ export const login = {
   </div>
   `
 };
+
