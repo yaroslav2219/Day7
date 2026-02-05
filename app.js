@@ -7,7 +7,7 @@ import { img } from "./img.js";
 
 document.addEventListener('DOMContentLoaded', function(){
 
-  const WORKER_URL = 'https://twilight-night-3140.kya-pk22-6-3.workers.dev'; // це потрібно для для роботи з https переходами
+  const WORKER_URL = 'https://affiliate.yanbasok.com'; 
 
   const appConfig = {
     data() {
@@ -128,4 +128,5 @@ document.addEventListener('DOMContentLoaded', function(){
 
   app.use(router).mount('#content');
 });
+
 
