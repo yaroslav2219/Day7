@@ -7,7 +7,7 @@ import { img } from "./img.js";
 
 document.addEventListener('DOMContentLoaded', function(){
 
-  const WORKER_URL = 'https://affiliate.yanbasok.com'; 
+  const WORKER_URL = 'https://twilight-night-3140.kya-pk22-6-3.workers.dev/'; 
 
   const appConfig = {
     data() {
@@ -139,6 +139,7 @@ document.addEventListener('DOMContentLoaded', function(){
 
   app.use(router).mount('#content');
 });
+
 
 
 
