@@ -71,7 +71,7 @@ document.addEventListener('DOMContentLoaded', function(){
       this.updateTitle();
     }
   });
-}
+},
 
 
       logout() {
@@ -130,5 +130,6 @@ document.addEventListener('DOMContentLoaded', function(){
 
   app.use(router).mount('#content');
 });
+
 
 
