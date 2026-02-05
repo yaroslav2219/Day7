@@ -1,127 +1,81 @@
-import { router } from "./router.js";
-import { msg } from "./msg.js";
-import { popup } from "./popup.js";
-import { header } from "./header.js";
-import { toogle } from "./toogle.js";
-import { img } from "./img.js";
+import { router } from './router.js';
+import { login } from './login.js';
+import { header } from './header.js';
+import { statistics } from './statistics.js';
+import { ads } from './ads.js';
+import { sites } from './sites.js';
+import { payments } from './payments.js';
+import { campaigns } from './campaigns.js';
+import { users } from './users.js';
 
-document.addEventListener('DOMContentLoaded', () => {
-
-  const WORKER_URL = 'https://twilight-night-3140.kya-pk22-6-3.workers.dev';
+document.addEventListener('DOMContentLoaded', function() {
 
   const appConfig = {
     data() {
       return {
-        url: WORKER_URL,
-
-        user: {
-          id: null,
-          name: "",
-          phone: "",
-          email: "",
-          date: "",
-          auth: "",
-          type: ""
-        },
-
+        user: { id:null, name:"", email:"", type:"" },
         title: "",
-
-        formData: {
-          email: "",
-          password: ""
-        }
+        formData: { email:'', password:'' }
       };
     },
 
-    watch: {
-      $route() {
-        this.init();
-      }
-    },
-
     mounted() {
-      this.init();
+      this.initUser();
     },
 
     methods: {
-      fixUrl(url) {
-        if (!url) return '';
-        return url.replace(/^http:/, 'https:');
-      },
-
       initUser() {
-        const stored = localStorage.getItem('user');
-        if (stored) {
+        const stored = window.localStorage.getItem('user');
+        if(stored){
           this.user = JSON.parse(stored);
         }
       },
 
-      init() {
-        this.initUser();
-
-        router.isReady().then(() => {
-          if (!this.user?.id) {
-            this.page('/');
-            return;
-          }
-
-          const page = this.$route.path.split('/')[1] || '';
-
-          if (this.user.type === 'admin') {
-            if (!['campaigns', 'campaign', 'users', 'user'].includes(page)) {
-              this.page('/campaigns');
-            }
-          } else {
-            if (!['statistics', 'ads', 'sites', 'payments'].includes(page)) {
-              this.page('/statistics');
-            }
-          }
-
-          this.updateTitle();
-        });
+      loginMock(email) {
+        if(email === 'yaroslav@mail.com') {
+          // Звичайний користувач
+          this.user = {
+            id: 1,
+            name: 'Yaroslav',
+            email: 'yaroslav@mail.com',
+            type: 'user'
+          };
+          window.localStorage.setItem('user', JSON.stringify(this.user));
+          this.$router.replace('/statistics');
+        }
+        else if(email === 'admin@mail.com') {
+          // Адмін
+          this.user = {
+            id: 2,
+            name: 'Admin',
+            email: 'admin@mail.com',
+            type: 'admin'
+          };
+          window.localStorage.setItem('user', JSON.stringify(this.user));
+          this.$router.replace('/campaigns');
+        }
+        else {
+          alert('Невірний користувач');
+        }
       },
 
       logout() {
-        this.user = {
-          id: null,
-          name: "",
-          phone: "",
-          email: "",
-          date: "",
-          auth: "",
-          type: ""
-        };
-        localStorage.removeItem('user');
-        this.page('/');
-      },
-
-      page(path) {
-        this.$router.replace(path);
-      },
-
-      updateTitle() {
-        this.title = this.$route.name || '';
-        document.title = this.title;
-      },
-
-      toFormData(obj) {
-        const fd = new FormData();
-        for (const key in obj) {
-          fd.append(key, obj[key]);
-        }
-        return fd;
+        this.user = { id:null, name:"", email:"", type:"" };
+        window.localStorage.removeItem('user');
+        this.$router.replace('/');
       }
     }
   };
 
-  const app = Vue.createApp(appConfig);
+  const app = Vue.createApp(appConfig)
+    .component('Header', header)
+    .component('login', login)
+    .component('statistics', statistics)
+    .component('ads', ads)
+    .component('sites', sites)
+    .component('payments', payments)
+    .component('campaigns', campaigns)
+    .component('users', users);
 
-  app.component('img', img);
-  app.component('toogle', toogle);
-  app.component('Header', header);
-  app.component('popup', popup);
-  app.component('msg', msg);
-
-  app.use(router);
-  app.mount('#content');
+  app.use(router).mount('#content');
 });
