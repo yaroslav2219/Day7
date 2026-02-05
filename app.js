@@ -46,31 +46,42 @@ document.addEventListener('DOMContentLoaded', function(){
         }
       },
 
-      init() {
-        this.initUser();
+     init() {
+  this.initUser();
 
-        router.isReady().then(() => {
-          if(!this.user?.id){
-            this.page('/');
-            return;
-          }
+  router.isReady().then(() => {
+    if (!this.user?.id) {
+      this.logout(); // Жорсткий logout, якщо user не визначений
+      return;
+    }
 
-          const pathSegment = this.$route.path.split('/')[1] || '';
+    const pathSegment = this.$route.path.split('/')[1] || '';
 
-          if(pathSegment === '' && this.user.type === 'admin'){
-            this.page('/campaigns');
-          }
-          else if(['/campaigns','/campaign','/users','/user'].includes('/'+pathSegment) && this.user.type !== 'admin'){
-            this.page('/statistics');
-          }
-          else if(['/statistics','/payments','/sites'].includes('/'+pathSegment) && this.user.type === 'admin'){
-            this.page('/campaigns');
-          }
-          else {
-            this.updateTitle();
-          }
-        });
-      },
+    // 🔹 Жорстка перевірка ролі
+    const adminPages = ['campaigns', 'campaign', 'users', 'user'];
+    const userPages = ['statistics', 'payments', 'sites', 'ads'];
+
+    if (adminPages.includes(pathSegment) && this.user.type !== 'admin') {
+      this.logout(); // якщо не адмін → logout
+      return;
+    }
+
+    if (userPages.includes(pathSegment) && this.user.type !== 'user') {
+      this.logout(); // якщо не юзер → logout
+      return;
+    }
+
+    // Стандартні редіректи
+    if (pathSegment === '' && this.user.type === 'admin') {
+      this.page('/campaigns');
+    } else if (pathSegment === '' && this.user.type === 'user') {
+      this.page('/statistics');
+    } else {
+      this.updateTitle();
+    }
+  });
+},
+
 
       logout() {
         this.user = { id:null, name:"", phone:"", email:"", date:"", auth:"", type:"" };
@@ -128,5 +139,6 @@ document.addEventListener('DOMContentLoaded', function(){
 
   app.use(router).mount('#content');
 });
+
 
 
