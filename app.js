@@ -5,21 +5,33 @@ import { header } from "./header.js";
 import { toogle } from "./toogle.js";
 import { img } from "./img.js";
 
-document.addEventListener('DOMContentLoaded', function(){
+document.addEventListener('DOMContentLoaded', () => {
 
-  const WORKER_URL = 'https://twilight-night-3140.kya-pk22-6-3.workers.dev'; // це потрібно для для роботи з https переходами
+  const WORKER_URL = 'https://twilight-night-3140.kya-pk22-6-3.workers.dev';
 
-data() {
-  return {
-    url: WORKER_URL,
-    user: { id:null, name:"", phone:"", email:"", date:"", auth:"", type:"" },
-    title: "",
-    formData: {
-      email: '',
-      password: ''
-      }
-    }
-  },
+  const appConfig = {
+    data() {
+      return {
+        url: WORKER_URL,
+
+        user: {
+          id: null,
+          name: "",
+          phone: "",
+          email: "",
+          date: "",
+          auth: "",
+          type: ""
+        },
+
+        title: "",
+
+        formData: {
+          email: "",
+          password: ""
+        }
+      };
+    },
 
     watch: {
       $route() {
@@ -38,62 +50,53 @@ data() {
       },
 
       initUser() {
-        const stored = window.localStorage.getItem('user');
-        if(stored){
+        const stored = localStorage.getItem('user');
+        if (stored) {
           this.user = JSON.parse(stored);
-          if(!this.user.id && this.user?.auth?.data){
-            this.user.id = this.user.auth.data;
-            window.localStorage.setItem('user', JSON.stringify(this.user));
-          }
         }
       },
 
-     init() {
-  this.initUser();
+      init() {
+        this.initUser();
 
-  router.isReady().then(() => {
-    if(!this.user?.id){
-      this.page('/');
-      return;
-    }
+        router.isReady().then(() => {
+          if (!this.user?.id) {
+            this.page('/');
+            return;
+          }
 
-    const pathSegment = this.$route.path.split('/')[1] || '';
+          const page = this.$route.path.split('/')[1] || '';
 
+          if (this.user.type === 'admin') {
+            if (!['campaigns', 'campaign', 'users', 'user'].includes(page)) {
+              this.page('/campaigns');
+            }
+          } else {
+            if (!['statistics', 'ads', 'sites', 'payments'].includes(page)) {
+              this.page('/statistics');
+            }
+          }
 
-    if(pathSegment === '' && this.user.type === 'admin'){
-      this.page('/campaigns');
-    }
-    else if(['/campaigns','/campaign','/users','/user'].includes('/'+pathSegment) && this.user.type !== 'admin'){
-      this.page('/statistics'); 
-    }
-    else if(['/statistics','/payments','/sites','/ads'].includes('/'+pathSegment) && this.user.type === 'admin'){
-      this.page('/campaigns');
-    }
-    else {
-      this.updateTitle();
-    }
-  });
-},
-
+          this.updateTitle();
+        });
+      },
 
       logout() {
-        this.user = { id:null, name:"", phone:"", email:"", date:"", auth:"", type:"" };
-        window.localStorage.removeItem('user');
+        this.user = {
+          id: null,
+          name: "",
+          phone: "",
+          email: "",
+          date: "",
+          auth: "",
+          type: ""
+        };
+        localStorage.removeItem('user');
         this.page('/');
       },
 
-      scrollTop(){
-        setTimeout(() => window.scroll({ top: 0, behavior: 'smooth' }), 50);
-      },
-
-      scrollButton(){
-        setTimeout(() => window.scroll({ top: 1000, behavior: 'smooth' }), 50);
-      },
-
-      page(path=""){
-        this.$router.replace(path).then(() => {
-          this.updateTitle();
-        });
+      page(path) {
+        this.$router.replace(path);
       },
 
       updateTitle() {
@@ -101,38 +104,24 @@ data() {
         document.title = this.title;
       },
 
-      toFormData(obj){
+      toFormData(obj) {
         const fd = new FormData();
-        for(const x in obj){
-          if(typeof obj[x] === 'object' && x !== 'img' && x !== 'copy'){
-            for(const y in obj[x]){
-              if(typeof obj[x][y] === 'object'){
-                for(const z in obj[x][y]){
-                  fd.append(`${x}[${y}][${z}]`, obj[x][y][z]);
-                }
-              } else {
-                fd.append(`${x}[${y}]`, obj[x][y]);
-              }
-            }
-          } else if(x !== 'copy'){
-            fd.append(x, obj[x]);
-          }
+        for (const key in obj) {
+          fd.append(key, obj[key]);
         }
         return fd;
       }
     }
   };
 
-  const app = Vue.createApp(appConfig)
-    .component('img', img)
-    .component('toogle', toogle)
-    .component('Header', header)
-    .component('popup', popup)
-    .component('msg', msg);
+  const app = Vue.createApp(appConfig);
 
-  app.use(router).mount('#content');
+  app.component('img', img);
+  app.component('toogle', toogle);
+  app.component('Header', header);
+  app.component('popup', popup);
+  app.component('msg', msg);
+
+  app.use(router);
+  app.mount('#content');
 });
-
-
-
-
