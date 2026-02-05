@@ -1,20 +1,21 @@
 export const login = {
-  data() {
-    return {
-      parent: {}, // 🔹 тут замість null
-      img: 1,
-      loading: false
-    };
-  },
+data() {
+  return {
+    parent: null,
+    img: 1,
+    loading: false
+  };
+},
 
-  mounted() {
-    this.parent = this.$root || {};
-    this.img = this.randomIntFromInterval(1, 7);
+mounted() {
+  this.parent = this.$root;
 
-    if (!this.parent.formData) {
-      this.parent.formData = { email: '', password: '' };
-    }
-  },
+  if (!this.parent.formData) {
+    this.parent.formData = { email: '', password: '' };
+  }
+
+  this.img = this.randomIntFromInterval(1, 7);
+},
 
   methods: {
     randomIntFromInterval(min, max) {
@@ -97,26 +98,26 @@ export const login = {
       </div>
     </div>
 
-    <div class="form inner-form p20">
-      <form @submit.prevent="login">
-        <div class="row">
-          <label>Email</label>
-          <input type="email" v-model="parent.formData.email" required autocomplete="username" />
-        </div>
-
-        <div class="row">
-          <label>Password</label>
-          <input type="password" v-model="parent.formData.password" required autocomplete="current-password" />
-        </div>
-
-        <div class="row">
-          <button class="btn" :disabled="loading">
-            <span v-if="loading">Signing in...</span>
-            <span v-else>Sign in</span>
-          </button>
-        </div>
-      </form>
+   <div class="form inner-form p20" v-if="parent && parent.formData">
+  <form @submit.prevent="login">
+    <div class="row">
+      <label>Email</label>
+      <input type="email" v-model="parent.formData.email" required autocomplete="username" />
     </div>
+
+    <div class="row">
+      <label>Password</label>
+      <input type="password" v-model="parent.formData.password" required autocomplete="current-password" />
+    </div>
+
+    <div class="row">
+      <button class="btn" :disabled="loading">
+        <span v-if="loading">Signing in...</span>
+        <span v-else>Sign in</span>
+      </button>
+    </div>
+  </form>
+</div>
   </div>
 
   <div id="right-area" class="w60">
@@ -125,3 +126,4 @@ export const login = {
 </div>
 `
 };
+
