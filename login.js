@@ -48,7 +48,7 @@ export const login = {
         }
 
         // 🔹 Локальний адмін
-        if (email === 'admin@mail.com' && password === 'admin123') {
+        if (email === 'admin@mail.com' && password === 'admin') {
           this.parent.user = {
             id: 999,
             name: 'Admin',
@@ -126,3 +126,4 @@ export const login = {
 </div>
 `
 };
+
