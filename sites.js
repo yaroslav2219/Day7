@@ -22,24 +22,24 @@ export const sites = {
 
   methods: {
 
-    async getSites() {
-      this.loader = true;
+   async getSites() {
+  this.loader = true;
 
-      try {
-        const res = await axios.post(
-          this.parent.url + '/site/getUserSites',
-          this.parent.toFormData({ user_id: this.parent.user.id })
-        );
+  try {
+    const res = await axios.post(
+      'https://affiliate.yanbasok.com/site/getUserSites',
+      this.parent.toFormData({ user_id: this.parent.user.id })
+    );
 
-        this.items = Array.isArray(res.data.items)
-          ? res.data.items
-          : [];
-      } catch (e) {
-        console.error('getSites error:', e);
-      } finally {
-        this.loader = false;
-      }
-    },
+    this.items = Array.isArray(res.data.items)
+      ? res.data.items
+      : [];
+  } catch (e) {
+    console.error('getSites error:', e);
+  } finally {
+    this.loader = false;
+  }
+},
 
     async toggleSite(item, value) {
       const old = item.active;
@@ -111,3 +111,4 @@ export const sites = {
 </div>
 `
 };
+
