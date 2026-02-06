@@ -1,3 +1,6 @@
+console.log('payments module loaded');
+
+const API_URL = 'https://affiliate.yanbasok.com';
 
 export const payments = {
   data() {
@@ -11,8 +14,9 @@ export const payments = {
   mounted() {
     this.parent = this.$root;
 
-    if (!this.parent?.user?.id || this.parent.user.role !== 'user') {
-      this.$router.push('/');
+    // ✅ правильна перевірка доступу
+    if (!this.parent?.user?.id || this.parent.user.type !== 'user') {
+      this.$router.replace('/');
       return;
     }
 
@@ -26,7 +30,7 @@ export const payments = {
 
       try {
         const res = await axios.post(
-          this.parent.url + '/site/getUserPayments',
+          API_URL + '/site/getUserPayments',
           this.parent.toFormData({ user_id: this.parent.user.id })
         );
 
