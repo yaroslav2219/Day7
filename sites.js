@@ -1,67 +1,17 @@
-console.log('sites module loaded');
-
-const API_URL = 'https://affiliate.yanbasok.com';
-
 export const sites = {
   data() {
     return {
-      parent: null,
-      loader: false,
-      items: []
+      parent: null
     };
   },
 
   mounted() {
     this.parent = this.$root;
 
-    // ✅ правильна перевірка доступу
+    // тільки user
     if (!this.parent?.user?.id || this.parent.user.type !== 'user') {
       this.$router.replace('/');
-      return;
     }
-
-    this.getSites();
-  },
-
-  methods: {
-
-    async getSites() {
-      this.loader = true;
-
-      try {
-        const res = await axios.post(
-          API_URL + '/site/getUserSites',
-          this.parent.toFormData({ user_id: this.parent.user.id })
-        );
-
-        this.items = Array.isArray(res.data.items)
-          ? res.data.items
-          : [];
-      } catch (e) {
-        console.error('getSites error:', e);
-      } finally {
-        this.loader = false;
-      }
-    },
-
-    async toggleSite(item, value) {
-      const old = item.active;
-      item.active = value;
-
-      try {
-        await axios.post(
-          API_URL + '/site/actionSite',
-          this.parent.toFormData({
-            id: item.id,
-            active: value
-          })
-        );
-      } catch (e) {
-        console.error('toggleSite error:', e);
-        item.active = old;
-      }
-    }
-
   },
 
   template: `
@@ -70,9 +20,7 @@ export const sites = {
 
   <h1>Sites</h1>
 
-  <div v-if="loader" id="spinner"></div>
-
-  <div v-if="items.length" class="table">
+  <div class="table">
     <table>
       <thead>
         <tr>
@@ -86,31 +34,37 @@ export const sites = {
       </thead>
 
       <tbody>
-        <tr v-for="item in items" :key="item.id">
-          <td>{{ item.fclicks || 0 }}</td>
-          <td>{{ item.leads || 0 }}</td>
-          <td>{{ item.clicks || 0 }}</td>
-          <td>{{ item.views || 0 }}</td>
-
+        <tr>
+          <td>2</td>
+          <td>14</td>
+          <td>120</td>
+          <td>540</td>
           <td>
-            <a :href="item.site" target="_blank">
-              {{ item.site }}
+            <a href="https://example-site-1.com" target="_blank">
+              https://example-site-1.com
             </a>
           </td>
+          <td>
+            <toogle :modelValue="1" />
+          </td>
+        </tr>
 
-          <td class="actions">
-            <toogle
-              :modelValue="item.active"
-              @update:modelValue="toggleSite(item, $event)"
-            />
+        <tr>
+          <td>0</td>
+          <td>6</td>
+          <td>80</td>
+          <td>310</td>
+          <td>
+            <a href="https://example-site-2.com" target="_blank">
+              https://example-site-2.com
+            </a>
+          </td>
+          <td>
+            <toogle :modelValue="0" />
           </td>
         </tr>
       </tbody>
     </table>
-  </div>
-
-  <div v-else class="empty">
-    No sites
   </div>
 </div>
 `
