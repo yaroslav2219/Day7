@@ -1,8 +1,8 @@
-console.log('payments module loaded');
+console.log('sites module loaded');
 
 const API_URL = 'https://affiliate.yanbasok.com';
 
-export const payments = {
+export const sites = {
   data() {
     return {
       parent: null,
@@ -20,17 +20,17 @@ export const payments = {
       return;
     }
 
-    this.getPayments();
+    this.getSites();
   },
 
   methods: {
 
-    async getPayments() {
+    async getSites() {
       this.loader = true;
 
       try {
         const res = await axios.post(
-          API_URL + '/site/getUserPayments',
+          API_URL + '/site/getUserSites',
           this.parent.toFormData({ user_id: this.parent.user.id })
         );
 
@@ -38,9 +38,27 @@ export const payments = {
           ? res.data.items
           : [];
       } catch (e) {
-        console.error('getPayments error:', e);
+        console.error('getSites error:', e);
       } finally {
         this.loader = false;
+      }
+    },
+
+    async toggleSite(item, value) {
+      const old = item.active;
+      item.active = value;
+
+      try {
+        await axios.post(
+          API_URL + '/site/actionSite',
+          this.parent.toFormData({
+            id: item.id,
+            active: value
+          })
+        );
+      } catch (e) {
+        console.error('toggleSite error:', e);
+        item.active = old;
       }
     }
 
@@ -50,34 +68,49 @@ export const payments = {
 <div class="inside-content">
   <Header />
 
-  <h1>Payments</h1>
+  <h1>Sites</h1>
 
   <div v-if="loader" id="spinner"></div>
 
-  <div class="table" v-if="items.length">
+  <div v-if="items.length" class="table">
     <table>
       <thead>
         <tr>
-          <th class="id">#</th>
-          <th>Description</th>
-          <th>Date</th>
-          <th>Value</th>
+          <th>Fraud</th>
+          <th>Leads</th>
+          <th>Clicks</th>
+          <th>Views</th>
+          <th>Site</th>
+          <th></th>
         </tr>
       </thead>
 
       <tbody>
-        <tr v-for="(item, index) in items" :key="item.id || index">
-          <td class="id">{{ index + 1 }}</td>
-          <td>{{ item.description }}</td>
-          <td>{{ item.date_title || item.date }}</td>
-          <td>{{ item.value }}</td>
+        <tr v-for="item in items" :key="item.id">
+          <td>{{ item.fclicks || 0 }}</td>
+          <td>{{ item.leads || 0 }}</td>
+          <td>{{ item.clicks || 0 }}</td>
+          <td>{{ item.views || 0 }}</td>
+
+          <td>
+            <a :href="item.site" target="_blank">
+              {{ item.site }}
+            </a>
+          </td>
+
+          <td class="actions">
+            <toogle
+              :modelValue="item.active"
+              @update:modelValue="toggleSite(item, $event)"
+            />
+          </td>
         </tr>
       </tbody>
     </table>
   </div>
 
-  <div class="empty" v-else>
-    No payments
+  <div v-else class="empty">
+    No sites
   </div>
 </div>
 `
