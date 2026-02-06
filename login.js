@@ -43,7 +43,7 @@ export const login = {
             type: 'user'
           };
           window.localStorage.setItem('user', JSON.stringify(this.parent.user));
-          this.parent.page('/statistics'); // локальний user йде на statistics
+          this.parent.page('/statistic'); // локальний user йде на statistics
           return;
         }
 
@@ -126,3 +126,4 @@ export const login = {
 </div>
 `
 };
+
