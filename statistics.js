@@ -44,9 +44,9 @@ export const statistics = {
 
       <tbody>
         <tr v-for="item in [
-          {id:1, fclicks:5, leads:12, clicks:200, views:1500, campaign:'Crypto UA', link:'https://crypto.ua', image:'https://via.placeholder.com/32', active:true},
-          {id:2, fclicks:2, leads:7, clicks:120, views:980, campaign:'Finance EU', link:'https://finance.eu', image:'https://via.placeholder.com/32', active:false},
-          {id:3, fclicks:0, leads:3, clicks:60, views:430, campaign:'Dating PL', link:'https://dating.pl', image:'https://via.placeholder.com/32', active:true}
+          {id:1, fclicks:5, leads:12, clicks:200, views:1500, campaign:'dreamiew-seo', link:'https://dreamview-seo.co.il', image:'./dreamview-seo.png', active:false},
+          {id:2, fclicks:2, leads:7, clicks:120, views:980, campaign:'dreamiew-seo', link:'https://dreamview-seo.co.il', image:'./dreamview-seo.png', active:false},
+          {id:3, fclicks:0, leads:3, clicks:60, views:430, campaign:'ineedjob', link:'https://ineedjob.co.il', image:'./ineedjob.png', active:false}
         ]" :key="item.id">
 
           <td>{{ item.fclicks }}</td>
@@ -70,3 +70,4 @@ export const statistics = {
 </div>
 `
 };
+
