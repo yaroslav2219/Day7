@@ -1,94 +1,65 @@
 export const statistics = {
-  name: 'statistics',
-
   data() {
     return {
-      parent: null,
-      loader: false,
-      items: []
+      parent: null
     };
   },
 
   mounted() {
     this.parent = this.$root;
 
-    const user = this.parent?.user;
-
-    // 🔒 Доступ ТІЛЬКИ для конкретного користувача
-    if (!user || user.email !== 'yaroslav@mail.com') {
-      // ❗ захист від зациклення
-      if (this.$route.path !== '/') {
-        this.$router.replace('/');
-      }
-      return;
-    }
-
-    this.getStatistic();
-  },
-
-  methods: {
-    async getStatistic() {
-      this.loader = true;
-
-      try {
-        const res = await axios.post(
-          this.parent.url + '/site/getUserStatistic',
-          this.parent.toFormData({
-            user_id: this.parent.user.id
-          })
-        );
-
-        this.items = Array.isArray(res?.data?.items)
-          ? res.data.items.map(i => ({
-              ...i,
-              image: this.parent.fixUrl(i.image)
-            }))
-          : [];
-      } catch (err) {
-        console.error('Statistic error:', err);
-        this.items = [];
-      } finally {
-        this.loader = false;
-      }
+    // тільки user
+    if (!this.parent?.user?.id || this.parent.user.type !== 'user') {
+      this.$router.replace('/');
     }
   },
 
   template: `
-    <div class="inside-content">
-      <Header />
+<div class="inside-content">
+  <Header />
 
-      <h1>My statistics</h1>
+  <h1>Statistics</h1>
 
-      <div v-if="loader" id="spinner"></div>
-
-      <table v-if="!loader && items.length">
+  <div class="table">
+    <table>
+      <thead>
         <tr>
-          <th>Leads</th>
-          <th>Clicks</th>
+          <th>Date</th>
           <th>Views</th>
-          <th>Campaign</th>
-          <th></th>
+          <th>Clicks</th>
+          <th>Leads</th>
+          <th>Fraud</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr>
+          <td>2025-01-01</td>
+          <td>540</td>
+          <td>120</td>
+          <td>14</td>
+          <td>2</td>
         </tr>
 
-        <tr v-for="i in items" :key="i.id">
-          <td>{{ i.leads }}</td>
-          <td>{{ i.clicks }}</td>
-          <td>{{ i.views }}</td>
-          <td>{{ i.campaign }}</td>
-          <td>
-            <img
-              v-if="i.image"
-              :src="i.image"
-              style="height:32px"
-              alt=""
-            >
-          </td>
+        <tr>
+          <td>2025-01-02</td>
+          <td>420</td>
+          <td>95</td>
+          <td>10</td>
+          <td>1</td>
         </tr>
-      </table>
 
-      <p v-if="!loader && !items.length">
-        No statistics available
-      </p>
-    </div>
-  `
+        <tr>
+          <td>2025-01-03</td>
+          <td>610</td>
+          <td>150</td>
+          <td>18</td>
+          <td>0</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+`
 };
