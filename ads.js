@@ -52,7 +52,7 @@ export const ads = {
           <td><a :href="item.link" target="_blank">{{ item.link }}</a></td>
           <td><img :src="item.image" style="height:32px" /></td>
           <td>
-            <button class="btn" @click="copyLink(item.link)">Copy</button>
+            <i class="fa-solid fa-copy" @click="copyLink(item.link)" style="cursor:pointer"></i>
           </td>
 
         </tr>
@@ -62,3 +62,4 @@ export const ads = {
 </div>
 `
 };
+
