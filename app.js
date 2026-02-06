@@ -61,7 +61,7 @@ document.addEventListener('DOMContentLoaded', function(){
             }
           } else { // user
             if(!userRoutes.includes(pathSegment)){
-              this.page('/statistics');
+              this.page('/statistic');
               return;
             }
           }
@@ -116,4 +116,5 @@ document.addEventListener('DOMContentLoaded', function(){
 
   app.use(router).mount('#content');
 });
+
 
