@@ -10,7 +10,6 @@ export const login = {
   mounted() {
     this.parent = this.$root;
 
-    // Ініціалізація форми
     if (!this.parent.formData) {
       this.parent.formData = { email: '', password: '' };
     }
@@ -24,9 +23,7 @@ export const login = {
     },
 
     async login() {
-      const { email, password } = this.parent.formData || {};
-
-      if (!email || !password) {
+      if (!this.parent.formData?.email || !this.parent.formData?.password) {
         this.$refs.msg.alertFun('Enter email and password');
         return;
       }
@@ -35,7 +32,10 @@ export const login = {
 
       try {
         // 🔹 Локальний користувач
-        if (email === 'yaroslav@mail.com' && password === '123456') {
+        if (
+          this.parent.formData.email === 'yaroslav@mail.com' &&
+          this.parent.formData.password === '123456'
+        ) {
           this.parent.user = {
             id: 1,
             name: 'Yaroslav',
@@ -43,36 +43,36 @@ export const login = {
             type: 'user'
           };
           window.localStorage.setItem('user', JSON.stringify(this.parent.user));
-          this.parent.page('/statistics');
+          this.parent.page('/statistics'); // локальний user йде на statistics
           return;
         }
 
-        // 🔹 Локальний адмін
-        if (email === 'admin@mail.com' && password === 'admin') {
-          this.parent.user = {
-            id: 999,
-            name: 'Admin',
-            email: 'admin@mail.com',
-            type: 'admin'
-          };
-          window.localStorage.setItem('user', JSON.stringify(this.parent.user));
+        // 🔹 Серверний логін (для адміна)
+        const res = await axios.post(
+          `${this.parent.url || ''}/site/login`,
+          this.parent.toFormData(this.parent.formData)
+        );
+
+        if (res.data?.error) {
+          this.$refs.msg.alertFun(res.data.error);
+          return;
+        }
+
+        if (!res.data?.user) {
+          this.$refs.msg.alertFun('Login failed');
+          return;
+        }
+
+        this.parent.user = res.data.user;
+        window.localStorage.setItem('user', JSON.stringify(this.parent.user));
+
+        // Редірект по ролі
+        if (this.parent.user.type === 'admin') {
           this.parent.page('/campaigns');
-          return;
+        } else {
+          this.parent.page('/statistics');
         }
 
-        // const res = await axios.post(
-        //   `${this.parent.url || ''}/site/login`,
-        //   this.parent.toFormData(this.parent.formData)
-        // );
-        // if (res.data?.error) this.$refs.msg.alertFun(res.data.error);
-        // else if (!res.data?.user) this.$refs.msg.alertFun('Login failed');
-        // else {
-        //   this.parent.user = res.data.user;
-        //   window.localStorage.setItem('user', JSON.stringify(this.parent.user));
-        //   this.parent.page(this.parent.user.type === 'admin' ? '/campaigns' : '/statistics');
-        // }
-
-        this.$refs.msg.alertFun('Invalid credentials (local test only)');
       } catch (e) {
         console.error('LOGIN ERROR:', e);
         this.$refs.msg.alertFun('Network error');
@@ -126,4 +126,3 @@ export const login = {
 </div>
 `
 };
-
