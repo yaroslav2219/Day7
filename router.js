@@ -3,7 +3,7 @@ import { campaigns } from './campaigns.js'
 import { campaign } from './campaign.js'
 import { users } from './users.js'
 import { user } from './user.js'
-import { statistics } from './statistic.js'
+import { statistic } from './statistic.js'
 import { ads } from './ads.js'
 import { sites } from './sites.js'
 import { payments } from './payments.js'
@@ -73,4 +73,5 @@ export const router = VueRouter.createRouter({
     }
   ]
 })
+
 
