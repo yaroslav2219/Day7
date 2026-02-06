@@ -1,49 +1,16 @@
-console.log('payments module loaded');
-
-const API_URL = 'https://affiliate.yanbasok.com';
-
 export const payments = {
   data() {
     return {
-      parent: null,
-      loader: false,
-      items: []
+      parent: null
     };
   },
 
   mounted() {
     this.parent = this.$root;
 
-    // ✅ правильна перевірка доступу
     if (!this.parent?.user?.id || this.parent.user.type !== 'user') {
       this.$router.replace('/');
-      return;
     }
-
-    this.getPayments();
-  },
-
-  methods: {
-
-    async getPayments() {
-      this.loader = true;
-
-      try {
-        const res = await axios.post(
-          API_URL + '/site/getUserPayments',
-          this.parent.toFormData({ user_id: this.parent.user.id })
-        );
-
-        this.items = Array.isArray(res.data.items)
-          ? res.data.items
-          : [];
-      } catch (e) {
-        console.error('getPayments error:', e);
-      } finally {
-        this.loader = false;
-      }
-    }
-
   },
 
   template: `
@@ -52,13 +19,11 @@ export const payments = {
 
   <h1>Payments</h1>
 
-  <div v-if="loader" id="spinner"></div>
-
-  <div class="table" v-if="items.length">
+  <div class="table">
     <table>
       <thead>
         <tr>
-          <th class="id">#</th>
+          <th>#</th>
           <th>Description</th>
           <th>Date</th>
           <th>Value</th>
@@ -66,18 +31,21 @@ export const payments = {
       </thead>
 
       <tbody>
-        <tr v-for="(item, index) in items" :key="item.id || index">
-          <td class="id">{{ index + 1 }}</td>
-          <td>{{ item.description }}</td>
-          <td>{{ item.date_title || item.date }}</td>
-          <td>{{ item.value }}</td>
+        <tr>
+          <td>1</td>
+          <td>Affiliate payout</td>
+          <td>2025-01-10</td>
+          <td>$120.00</td>
+        </tr>
+
+        <tr>
+          <td>2</td>
+          <td>Bonus payout</td>
+          <td>2025-02-01</td>
+          <td>$50.00</td>
         </tr>
       </tbody>
     </table>
-  </div>
-
-  <div class="empty" v-else>
-    No payments
   </div>
 </div>
 `
