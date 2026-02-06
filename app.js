@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', function(){
           // 🔹 доступ для admin
           const adminRoutes = ['campaigns','campaign','users','user'];
           // 🔹 доступ для user
-          const userRoutes = ['statistics','ads','sites','payments'];
+          const userRoutes = ['statistic','ads','sites','payments'];
 
           if(this.user.type === 'admin'){
             if(!adminRoutes.includes(pathSegment)){
@@ -116,3 +116,4 @@ document.addEventListener('DOMContentLoaded', function(){
 
   app.use(router).mount('#content');
 });
+
