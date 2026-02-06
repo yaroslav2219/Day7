@@ -14,52 +14,59 @@ export const statistics = {
     }
   },
 
+  methods: {
+    toggleItem(item, value) {
+      // просто міняємо локально для демо
+      item.active = value;
+    }
+  },
+
   template: `
 <div class="inside-content">
   <Header />
 
-  <h1>Statistics</h1>
+  <h1>My statistics</h1>
 
   <div class="table">
     <table>
       <thead>
         <tr>
-          <th>Date</th>
-          <th>Views</th>
-          <th>Clicks</th>
-          <th>Leads</th>
           <th>Fraud</th>
+          <th>Leads</th>
+          <th>Clicks</th>
+          <th>Views</th>
+          <th>Campaign</th>
+          <th>Link</th>
+          <th></th> <!-- фото -->
+          <th></th> <!-- toggle -->
         </tr>
       </thead>
 
       <tbody>
-        <tr>
-          <td>2025-01-01</td>
-          <td>540</td>
-          <td>120</td>
-          <td>14</td>
-          <td>2</td>
-        </tr>
+        <tr v-for="item in [
+          {id:1, fclicks:5, leads:12, clicks:200, views:1500, campaign:'Crypto UA', link:'https://crypto.ua', image:'https://via.placeholder.com/32', active:true},
+          {id:2, fclicks:2, leads:7, clicks:120, views:980, campaign:'Finance EU', link:'https://finance.eu', image:'https://via.placeholder.com/32', active:false},
+          {id:3, fclicks:0, leads:3, clicks:60, views:430, campaign:'Dating PL', link:'https://dating.pl', image:'https://via.placeholder.com/32', active:true}
+        ]" :key="item.id">
 
-        <tr>
-          <td>2025-01-02</td>
-          <td>420</td>
-          <td>95</td>
-          <td>10</td>
-          <td>1</td>
-        </tr>
+          <td>{{ item.fclicks }}</td>
+          <td>{{ item.leads }}</td>
+          <td>{{ item.clicks }}</td>
+          <td>{{ item.views }}</td>
+          <td>{{ item.campaign }}</td>
+          <td><a :href="item.link" target="_blank">{{ item.link }}</a></td>
+          <td><img :src="item.image" style="height:32px" /></td>
+          <td>
+            <toogle 
+              :modelValue="item.active"
+              @update:modelValue="toggleItem(item, $event)"
+            />
+          </td>
 
-        <tr>
-          <td>2025-01-03</td>
-          <td>610</td>
-          <td>150</td>
-          <td>18</td>
-          <td>0</td>
         </tr>
       </tbody>
     </table>
   </div>
-
 </div>
 `
 };
