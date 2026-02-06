@@ -34,15 +34,15 @@ export const payments = {
         <tr>
           <td>1</td>
           <td>Affiliate payout</td>
-          <td>2025-01-10</td>
-          <td>$120.00</td>
+          <td>2026-01-10</td>
+          <td>1200</td>
         </tr>
 
         <tr>
           <td>2</td>
           <td>Bonus payout</td>
-          <td>2025-02-01</td>
-          <td>$50.00</td>
+          <td>2026-02-01</td>
+          <td>500</td>
         </tr>
       </tbody>
     </table>
@@ -50,3 +50,4 @@ export const payments = {
 </div>
 `
 };
+
