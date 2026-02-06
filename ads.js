@@ -1,135 +1,68 @@
-console.log('ads module loaded');
+console.log('ads module loaded (hard html)');
 
 export const ads = {
   data() {
     return {
-      parent: null,
-      loader: false,
-
-      items: [],
-
-      popupActive: false,
-      popupImage: ''
+      parent: null
     };
   },
 
   mounted() {
     this.parent = this.$root;
 
-    if (!this.parent?.user?.id) {
-      console.warn('NO AUTH USER');
-      this.parent.logout();
-      return;
-    }
-
-    this.getAds();
-  },
-
-  methods: {
-    async getAds() {
-      this.loader = true;
-
-      try {
-        const res = await axios.post(
-          `${this.parent.url}/site/getAds?auth=${this.parent.user.id}`
-        );
-
-        this.items = Array.isArray(res.data.items)
-          ? res.data.items.map(item => ({
-              ...item,
-              image: this.parent.fixUrl(item.image)
-            }))
-          : [];
-
-      } catch (e) {
-        console.error(e);
-      } finally {
-        this.loader = false;
-      }
-    },
-
-    openPopup(image) {
-      this.popupImage = image;
-      this.popupActive = true;
-    },
-
-    closePopup() {
-      this.popupActive = false;
-      this.popupImage = '';
-    },
-
-    copyLink(link) {
-      if (!link) return;
-
-      navigator.clipboard.writeText(link).then(() => {
-        this.$refs.header.$refs.msg.successFun('Link copied');
-      });
+    if (!this.parent?.user?.id || this.parent.user.type !== 'user') {
+      this.$router.replace('/');
     }
   },
 
   template: `
 <div class="inside-content">
+  <Header />
 
-  <Header ref="header" />
+  <h1>Ads</h1>
 
-  <div v-if="loader" id="spinner"></div>
+  <div class="table">
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Campaign</th>
+          <th>Views</th>
+          <th>Clicks</th>
+          <th>Leads</th>
+          <th>Status</th>
+        </tr>
+      </thead>
 
-  <div class="wrapper">
+      <tbody>
+        <tr>
+          <td>101</td>
+          <td>Crypto UA</td>
+          <td>1 250</td>
+          <td>210</td>
+          <td>18</td>
+          <td class="green">Active</td>
+        </tr>
 
-    <div class="panel">
-      <h1>Ads</h1>
-    </div>
+        <tr>
+          <td>102</td>
+          <td>Finance EU</td>
+          <td>980</td>
+          <td>140</td>
+          <td>9</td>
+          <td class="green">Active</td>
+        </tr>
 
-    <div class="table" v-if="items.length">
-      <table>
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Image</th>
-            <th>Campaign</th>
-            <th>Link</th>
-            <th class="actions"></th>
-          </tr>
-        </thead>
-
-        <tbody>
-          <tr v-for="item in items" :key="item.id">
-            <td>{{ item.id }}</td>
-
-            <td>
-              <img v-if="item.image" :src="item.image" class="thumb" @click="openPopup(item.image)" />
-            </td>
-
-            <td>{{ item.campaign }}</td>
-
-            <td class="link">
-              {{ item.link }}
-            </td>
-
-            <td class="actions">
-              <a href="#" @click.prevent="copyLink(item.link)">
-                <i class="fas fa-copy"></i>
-              </a>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="empty" v-else>No ads</div>
-  </div>
-
-  <div v-if="popupActive" class="popup-back" @click="closePopup"></div>
-
-  <div v-if="popupActive" class="popup popup-image">
-    <div class="head-popup">
-      <span>Banner preview</span>
-      <a href="#" @click.prevent="closePopup">&times;</a>
-    </div>
-
-    <div class="popup-inner ac">
-      <img :src="popupImage" class="popup-img" />
-    </div>
+        <tr>
+          <td>103</td>
+          <td>Dating PL</td>
+          <td>430</td>
+          <td>52</td>
+          <td>3</td>
+          <td class="red">Paused</td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 
 </div>
