@@ -1,5 +1,3 @@
-console.log('ads module loaded (hard html)');
-
 export const ads = {
   data() {
     return {
@@ -10,8 +8,17 @@ export const ads = {
   mounted() {
     this.parent = this.$root;
 
+    // тільки user
     if (!this.parent?.user?.id || this.parent.user.type !== 'user') {
       this.$router.replace('/');
+    }
+  },
+
+  methods: {
+    copyLink(link) {
+      navigator.clipboard.writeText(link)
+        .then(() => alert('Link copied!'))
+        .catch(() => alert('Failed to copy'));
     }
   },
 
@@ -25,46 +32,33 @@ export const ads = {
     <table>
       <thead>
         <tr>
-          <th>ID</th>
+          <th class="id">#</th>
           <th>Campaign</th>
-          <th>Views</th>
-          <th>Clicks</th>
-          <th>Leads</th>
-          <th>Status</th>
+          <th>Link</th>
+          <th></th> <!-- фото -->
+          <th>Actions</th>
         </tr>
       </thead>
 
       <tbody>
-        <tr>
-          <td>101</td>
-          <td>Crypto UA</td>
-          <td>1 250</td>
-          <td>210</td>
-          <td>18</td>
-          <td class="green">Active</td>
-        </tr>
+        <tr v-for="(item, index) in [
+          {id:1, campaign:'dreamview-seo', link:'https://dreamview-seo.co.il', image:'./dreamview-seo.png'},
+          {id:2, campaign:'ineedjob', link:'https://ineedjob.co.il', image:'./ineedjob.png'},
+          {id:3, campaign:'dreamview-seo', link:'https://dreamview-seo.co.il', image:'./dreamview-seo.png'}
+        ]" :key="item.id">
 
-        <tr>
-          <td>102</td>
-          <td>Finance EU</td>
-          <td>980</td>
-          <td>140</td>
-          <td>9</td>
-          <td class="green">Active</td>
-        </tr>
+          <td class="id">{{ index + 1 }}</td>
+          <td>{{ item.campaign }}</td>
+          <td><a :href="item.link" target="_blank">{{ item.link }}</a></td>
+          <td><img :src="item.image" style="height:32px" /></td>
+          <td>
+            <button class="btn" @click="copyLink(item.link)">Copy</button>
+          </td>
 
-        <tr>
-          <td>103</td>
-          <td>Dating PL</td>
-          <td>430</td>
-          <td>52</td>
-          <td>3</td>
-          <td class="red">Paused</td>
         </tr>
       </tbody>
     </table>
   </div>
-
 </div>
 `
 };
