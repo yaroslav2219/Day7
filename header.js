@@ -26,7 +26,6 @@ export const header = {
   <div class="wrapper">
     <div class="flex">
 
-      <!-- LOGO -->
       <div class="w20 logo">
         <img
           :src="parent?.url + '/favicon.ico'"
@@ -68,7 +67,6 @@ export const header = {
             </li>
           </ul>
 
-          <!-- USER MENU -->
           <ul
             v-else-if="parent?.user?.id"
             :class="{ active: menu }"
@@ -78,7 +76,7 @@ export const header = {
             </li>
 
             <li>
-              <router-link to="/statistics" @click="closeMenu">
+              <router-link to="/statistic" @click="closeMenu">
                 Statistics
               </router-link>
             </li>
@@ -104,7 +102,6 @@ export const header = {
         </div>
       </div>
 
-      <!-- USER DROPDOWN -->
       <div
         class="w10 al"
         id="user-top"
@@ -131,3 +128,4 @@ export const header = {
 </header>
 `
 };
+
