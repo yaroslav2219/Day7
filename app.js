@@ -7,13 +7,13 @@ import { img } from "./img.js";
 
 document.addEventListener('DOMContentLoaded', function(){
 
-  const WORKER_URL = 'https://twilight-night-3140.kya-pk22-6-3.workers.dev/'; 
+  const WORKER_URL = 'https://affiliate.yanbasok.com'; 
 
   const appConfig = {
     data() {
       return {
         url: WORKER_URL,
-        user: { id: null, name:"", phone:"", email:"", date:"", auth:"", type:"" },
+        user: { id: null, name:"", phone:"", email:"", auth:"", type:"" },
         title: "",
         formData: {},
       }
@@ -30,77 +30,54 @@ document.addEventListener('DOMContentLoaded', function(){
     },
 
     methods: {
-      fixUrl(url) {
-        if (!url) return '';
-        return url.replace(/^http:/, 'https:');
-      },
-
       initUser() {
         const stored = window.localStorage.getItem('user');
         if(stored){
           this.user = JSON.parse(stored);
-          if(!this.user.id && this.user?.auth?.data){
-            this.user.id = this.user.auth.data;
-            window.localStorage.setItem('user', JSON.stringify(this.user));
-          }
         }
       },
 
-     init() {
-  this.initUser();
+      init() {
+        this.initUser();
 
-  router.isReady().then(() => {
-    if (!this.user?.id) {
-      this.logout(); // Жорсткий logout, якщо user не визначений
-      return;
-    }
+        router.isReady().then(() => {
+          const pathSegment = this.$route.path.split('/')[1] || '';
 
-    const pathSegment = this.$route.path.split('/')[1] || '';
+          // якщо не залогінений
+          if(!this.user?.id){
+            this.page('/');
+            return;
+          }
 
-    // 🔹 Жорстка перевірка ролі
-    const adminPages = ['campaigns', 'campaign', 'users', 'user'];
-    const userPages = ['statistics', 'payments', 'sites', 'ads'];
+          // 🔹 доступ для admin
+          const adminRoutes = ['campaigns','campaign','users','user'];
+          // 🔹 доступ для user
+          const userRoutes = ['statistics','ads','sites','payments'];
 
-    if (adminPages.includes(pathSegment) && this.user.type !== 'admin') {
-      this.logout(); // якщо не адмін → logout
-      return;
-    }
+          if(this.user.type === 'admin'){
+            if(!adminRoutes.includes(pathSegment)){
+              this.page('/campaigns');
+              return;
+            }
+          } else { // user
+            if(!userRoutes.includes(pathSegment)){
+              this.page('/statistics');
+              return;
+            }
+          }
 
-    if (userPages.includes(pathSegment) && this.user.type !== 'user') {
-      this.logout(); // якщо не юзер → logout
-      return;
-    }
-
-    // Стандартні редіректи
-    if (pathSegment === '' && this.user.type === 'admin') {
-      this.page('/campaigns');
-    } else if (pathSegment === '' && this.user.type === 'user') {
-      this.page('/statistics');
-    } else {
-      this.updateTitle();
-    }
-  });
-},
-
+          this.updateTitle();
+        });
+      },
 
       logout() {
-        this.user = { id:null, name:"", phone:"", email:"", date:"", auth:"", type:"" };
+        this.user = { id:null, name:"", phone:"", email:"", auth:"", type:"" };
         window.localStorage.removeItem('user');
         this.page('/');
       },
 
-      scrollTop(){
-        setTimeout(() => window.scroll({ top: 0, behavior: 'smooth' }), 50);
-      },
-
-      scrollButton(){
-        setTimeout(() => window.scroll({ top: 1000, behavior: 'smooth' }), 50);
-      },
-
       page(path=""){
-        this.$router.replace(path).then(() => {
-          this.updateTitle();
-        });
+        this.$router.replace(path).then(() => this.updateTitle());
       },
 
       updateTitle() {
@@ -139,7 +116,3 @@ document.addEventListener('DOMContentLoaded', function(){
 
   app.use(router).mount('#content');
 });
-
-
-
-
