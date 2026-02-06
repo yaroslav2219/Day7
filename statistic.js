@@ -1,4 +1,4 @@
-export const statistics = {
+export const statistic = {
   data() {
     return {
       parent: null
@@ -8,7 +8,6 @@ export const statistics = {
   mounted() {
     this.parent = this.$root;
 
-    // тільки user
     if (!this.parent?.user?.id || this.parent.user.type !== 'user') {
       this.$router.replace('/');
     }
@@ -16,7 +15,6 @@ export const statistics = {
 
   methods: {
     toggleItem(item, value) {
-      // просто міняємо локально для демо
       item.active = value;
     }
   },
@@ -70,4 +68,5 @@ export const statistics = {
 </div>
 `
 };
+
 
